@@ -1,0 +1,98 @@
+{
+  "id": "adaff122-6b4c-4bcd-96c0-39c13e96eb0f",
+  "prevId": "c943234b-374d-42b5-a6c5-bc9d67cc659e",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.ulti_dashboard_preschool_menus": {
+      "name": "ulti_dashboard_preschool_menus",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "byDefault",
+            "name": "ulti_dashboard_preschool_menus_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "dayOfWeek": {
+          "name": "dayOfWeek",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "menuDate": {
+          "name": "menuDate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "morningSnack": {
+          "name": "morningSnack",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "soup": {
+          "name": "soup",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lunch": {
+          "name": "lunch",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "afternoonSnack": {
+          "name": "afternoonSnack",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

@@ -3,28 +3,21 @@
 import { JSDOM } from 'jsdom';
 import sharp from 'sharp';
 import { createWorker } from 'tesseract.js';
+import { db } from '~/server/db';
+import { preschool_menus } from '~/server/db/schema';
 
-type MenuDay = {
+export type MenuDay = {
     date: Date,
+    dayOfWeek: string,
     morningSnack: string,
     soup: string,
     lunch: string,
     afternoonSnack: string,
 }
 
-type MenuWeek = {
-    dayOfWeek: DayOfWeekCZ,
-    manuDay: MenuDay,
-}
-
-type DayOfWeekCZ =
-    "pondeli" |
-    "utery" |
-    "streda" |
-    "ctvrtek" |
-    "patek"
-
 export async function scrapeMenu() {
+    let menuDay: MenuDay
+
     // getting URLs of Menus from website
     const BASE_MS_URL = "https://msduha.estranky.cz"
     const response = await fetch('https://msduha.estranky.cz/clanky/jidelnicek.html')
@@ -41,7 +34,7 @@ export async function scrapeMenu() {
     });
 
     async function getTextFromImage(url: string) {
-        // testing of contrast adjustment
+        // contrast adjustment
         try {
             const response = await fetch(url)
             const buffer = await response.bytes()
@@ -66,35 +59,122 @@ export async function scrapeMenu() {
         console.log('created worker for CES OCR')
         const ret = await worker.recognize('adjustedMenu.jpeg');
         console.log('got data from OCR')
-        const ocrText = ret.data.text
-        console.log(ocrText)
-        parseText(ocrText.toLowerCase())
-        //TODO - save menuWeek object to database
+        const ocrText = ret.data.text.toLowerCase()
+        parseText(ocrText)
         await worker.terminate();
 
     }
 
     // we want to read from line starting with a dayOfWeek then 4 lines with all daily items
     // Friday is problematic because it has changing number of items
-    //TODO - implement parsing - this just idea - not working properly
-    //alternative - use Google AI Studio to parse the text for me?
+    // implemented parsing - this just idea - not working properly
+    // alternative - use Google AI Studio to parse the text for me?
     function parseText(ocrText: string) {
         const lines = ocrText.split("\n")
-        const dayLines: string[] = []
-        lines.forEach((line, index) => {
-            if (line.startsWith("pon")) {
-                dayLines.push(line)
-                if (lines[index + 1]?.startsWith("p")) dayLines.push(lines[index + 1] || "nenalezeno")
-                if (lines[index + 2]?.startsWith("p")) dayLines.push(lines[index + 2] || "nenalezeno")
-                if (lines[index + 3]?.startsWith("po")) dayLines.push(lines[index + 3] || "nenalezeno")
-                if (lines[index + 4]?.startsWith("po")) dayLines.push(lines[index + 4] || "nenalezeno")
-                if (lines[index + 5]?.startsWith("ob")) dayLines.push(lines[index + 5] || "nenalezeno")
-                if (lines[index + 6]?.startsWith("ob")) dayLines.push(lines[index + 6] || "nenalezeno")
-                if (lines[index + 7]?.startsWith("sv")) dayLines.push(lines[index + 7] || "nenalezeno")
-                if (lines[index + 8]?.startsWith("sv")) dayLines.push(lines[index + 8] || "nenalezeno")
+        const regex = /^(?:obě|p|sv|ut|út|st|ct|čt)/
+        const matches = lines.filter((str) => regex.test(str))
+        const splitToDays = splitArrayOnDays(matches)
+
+        splitToDays.forEach(async (arr) => {
+            const splitDay = arr[0]?.split(" ")
+
+            let dateString = ''
+            let date: Date
+            if (splitDay) {
+                dateString = splitDay[1] || ""
+
+                const parts = dateString?.split(".")
+                if (parts?.length === 3) {
+                    let day = parts[0] || ""
+                    let month = parts[1] || ""
+                    let year = parts[2] || ""
+
+                    date = new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0)
+
+                } else {
+                    throw new Error('Date has invalid format.')
+                }
+
+                const dayOfWeek = splitDay[0] || ""
+                if (dateString) {
+                    menuDay = {
+                        date: date,
+                        dayOfWeek: dayOfWeek,
+                        morningSnack: arr[1] || "",
+                        soup: arr[2] || "",
+                        lunch: arr[3] || "",
+                        afternoonSnack: arr[4] || "",
+                    }
+                } else {
+                    console.log('no day string found')
+                }
+
+
+            } else {
+                console.log("no day to split")
+            }
+
+            //save menuDay to DB
+            try {
+
+
+                const result = await db
+                    .insert(preschool_menus)
+                    .values({
+                        dayOfWeek: menuDay.dayOfWeek,
+                        menuDate: menuDay.date.toUTCString(),
+                        morningSnack: menuDay.morningSnack,
+                        soup: menuDay.soup,
+                        lunch: menuDay.lunch,
+                        afternoonSnack: menuDay.afternoonSnack,
+                    })
+                    .onConflictDoUpdate({
+                        target: preschool_menus.menuDate,
+                        set: {
+                            dayOfWeek: menuDay.dayOfWeek,
+                            morningSnack: menuDay.morningSnack,
+                            soup: menuDay.soup,
+                            lunch: menuDay.lunch,
+                            afternoonSnack: menuDay.afternoonSnack,
+
+                        }
+                    })
+                    .returning()
+                console.log('Updated row in database: ', result)
+            } catch (error) {
+                console.log("Error while inseting into DBL:", error)
             }
         })
-        console.log(dayLines)
     }
 
+    //get from array of random lines split array starting with day of the week and then menu items
+    function splitArrayOnDays(arr: string[]) {
+        const result = []
+        let currentChunk: string[] = []
+
+        for (let i = 0; i < arr.length; i++) {
+            const line = arr[i]
+
+            if (line?.startsWith("pond")
+                || line?.startsWith("ut")
+                || line?.startsWith("út")
+                || line?.startsWith("st")
+                || line?.startsWith("čt")
+                || line?.startsWith("ct")
+                || line?.startsWith("pa")
+                || line?.startsWith("pá")
+            ) {
+                if (currentChunk.length > 0) {
+                    result.push(currentChunk)
+                }
+                currentChunk = [line]
+            } else {
+                currentChunk.push(line || "not found")
+            }
+        }
+        if (currentChunk.length > 0) {
+            result.push(currentChunk);
+        }
+        return result
+    }
 }

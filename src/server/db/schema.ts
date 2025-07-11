@@ -2,7 +2,7 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { sql } from "drizzle-orm";
-import { index, pgTableCreator } from "drizzle-orm/pg-core";
+import { pgTableCreator } from "drizzle-orm/pg-core";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -12,16 +12,20 @@ import { index, pgTableCreator } from "drizzle-orm/pg-core";
  */
 export const createTable = pgTableCreator((name) => `ulti_dashboard_${name}`);
 
-export const posts = createTable(
-  "post",
+export const preschool_menus = createTable(
+  "preschool_menus",
   (d) => ({
     id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    name: d.varchar({ length: 256 }),
+    dayOfWeek: d.varchar({ length: 256 }).notNull(),
+    menuDate: d.date().unique().notNull(),
+    morningSnack: d.varchar({ length: 256 }).notNull(),
+    soup: d.varchar({ length: 256 }).notNull(),
+    lunch: d.varchar({ length: 256 }).notNull(),
+    afternoonSnack: d.varchar({ length: 256 }).notNull(),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-  }),
-  (t) => [index("name_idx").on(t.name)],
+  })
 );

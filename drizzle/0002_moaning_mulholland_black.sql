@@ -1,0 +1,2 @@
+ALTER TABLE "ulti_dashboard_preschool_menus" ALTER COLUMN "menuDate" SET NOT NULL;--> statement-breakpoint
+ALTER TABLE "ulti_dashboard_preschool_menus" ADD CONSTRAINT "ulti_dashboard_preschool_menus_menuDate_unique" UNIQUE("menuDate");
