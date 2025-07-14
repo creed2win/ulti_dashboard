@@ -1,0 +1,106 @@
+{
+  "id": "0ca3f270-6114-4671-90ab-2325b0bab3ec",
+  "prevId": "71b221f7-97e1-40d8-a142-79ddde495879",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.ulti_dashboard_preschool_menus": {
+      "name": "ulti_dashboard_preschool_menus",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "byDefault",
+            "name": "ulti_dashboard_preschool_menus_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "day_of_week": {
+          "name": "day_of_week",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "menu_date": {
+          "name": "menu_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "morning_snack": {
+          "name": "morning_snack",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "soup": {
+          "name": "soup",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lunch": {
+          "name": "lunch",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "afternoon_snack": {
+          "name": "afternoon_snack",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "ulti_dashboard_preschool_menus_menu_date_unique": {
+          "name": "ulti_dashboard_preschool_menus_menu_date_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "menu_date"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

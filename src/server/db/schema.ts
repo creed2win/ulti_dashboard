@@ -16,16 +16,16 @@ export const preschool_menus = createTable(
   "preschool_menus",
   (d) => ({
     id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    dayOfWeek: d.varchar({ length: 256 }).notNull(),
-    menuDate: d.date().unique().notNull(),
-    morningSnack: d.varchar({ length: 256 }).notNull(),
+    dayOfWeek: d.varchar('day_of_week', { length: 256 }).notNull(),
+    menuDate: d.date('menu_date').unique().notNull(),
+    morningSnack: d.varchar('morning_snack', { length: 256 }).notNull(),
     soup: d.varchar({ length: 256 }).notNull(),
     lunch: d.varchar({ length: 256 }).notNull(),
-    afternoonSnack: d.varchar({ length: 256 }).notNull(),
+    afternoonSnack: d.varchar('afternoon_snack', { length: 256 }).notNull(),
     createdAt: d
-      .timestamp({ withTimezone: true })
+      .timestamp('created_at', { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+    updatedAt: d.timestamp('updated_at', { withTimezone: true }).$onUpdate(() => new Date()),
   })
 );

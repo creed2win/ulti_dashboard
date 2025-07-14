@@ -4,3 +4,4 @@
     https://msduha.estranky.cz/clanky/jidelnicek.html
     button to load menus? - use server actions to do that
     maybe use jsdom library which i saw here https://www.youtube.com/watch?v=bGShHOOoC-U
+[ ] add nicer looking UI for menus - copy from v0
