@@ -25,13 +25,22 @@ export async function scrapeMenu() {
     const dom = new JSDOM(html)
 
     const imgs = dom.window.document.querySelectorAll('img')
-    imgs.forEach(async (img) => {
+
+    for (const img of imgs) {
         if (img.src.includes("jidelnicek")) {
             const url = BASE_MS_URL + img.src
             console.log('URL: ', url)
             await getTextFromImage(url)
         }
-    });
+    }
+
+    // imgs.forEach((img) => {
+    //     if (img.src.includes("jidelnicek")) {
+    //         const url = BASE_MS_URL + img.src
+    //         console.log('URL: ', url)
+    //         await getTextFromImage(url)
+    //     }
+    // });
 
     async function getTextFromImage(url: string) {
         // contrast adjustment
@@ -60,7 +69,7 @@ export async function scrapeMenu() {
         const ret = await worker.recognize('adjustedMenu.jpeg');
         console.log('got data from OCR')
         const ocrText = ret.data.text.toLowerCase()
-        parseText(ocrText)
+        await parseText(ocrText)
         await worker.terminate();
 
     }
@@ -69,25 +78,27 @@ export async function scrapeMenu() {
     // Friday is problematic because it has changing number of items
     // implemented parsing - this just idea - not working properly
     // alternative - use Google AI Studio to parse the text for me?
-    function parseText(ocrText: string) {
+    async function parseText(ocrText: string) {
         const lines = ocrText.split("\n")
         const regex = /^(?:obě|p|sv|ut|út|st|ct|čt)/
         const matches = lines.filter((str) => regex.test(str))
         const splitToDays = splitArrayOnDays(matches)
 
-        splitToDays.forEach(async (arr) => {
-            const splitDay = arr[0]?.split(" ")
+        // splitToDays.forEach(async (arr) =>
+
+        for (const day of splitToDays) {
+            const splitDay = day[0]?.split(" ")
 
             let dateString = ''
             let date: Date
             if (splitDay) {
-                dateString = splitDay[1] || ""
+                dateString = splitDay[1] ?? ""
 
                 const parts = dateString?.split(".")
                 if (parts?.length === 3) {
-                    let day = parts[0] || ""
-                    let month = parts[1] || ""
-                    let year = parts[2] || ""
+                    const day = parts[0] ?? ""
+                    const month = parts[1] ?? ""
+                    const year = parts[2] ?? ""
 
                     date = new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0)
 
@@ -95,15 +106,15 @@ export async function scrapeMenu() {
                     throw new Error('Date has invalid format.')
                 }
 
-                const dayOfWeek = splitDay[0] || ""
+                const dayOfWeek = splitDay[0] ?? ""
                 if (dateString) {
                     menuDay = {
                         date: date,
                         dayOfWeek: dayOfWeek,
-                        morningSnack: arr[1] || "",
-                        soup: arr[2] || "",
-                        lunch: arr[3] || "",
-                        afternoonSnack: arr[4] || "",
+                        morningSnack: day[1] ?? "",
+                        soup: day[2] ?? "",
+                        lunch: day[3] ?? "",
+                        afternoonSnack: day[4] ?? "",
                     }
                 } else {
                     console.log('no day string found')
@@ -144,7 +155,7 @@ export async function scrapeMenu() {
             } catch (error) {
                 console.log("Error while inseting into DBL:", error)
             }
-        })
+        }
     }
 
     //get from array of random lines split array starting with day of the week and then menu items
@@ -152,8 +163,7 @@ export async function scrapeMenu() {
         const result = []
         let currentChunk: string[] = []
 
-        for (let i = 0; i < arr.length; i++) {
-            const line = arr[i]
+        for (const line of arr) {
 
             if (line?.startsWith("pond")
                 || line?.startsWith("ut")
@@ -169,7 +179,7 @@ export async function scrapeMenu() {
                 }
                 currentChunk = [line]
             } else {
-                currentChunk.push(line || "not found")
+                currentChunk.push(line ?? "not found")
             }
         }
         if (currentChunk.length > 0) {

@@ -1,6 +1,4 @@
-import LinkBox from "./ui/linkBox";
-import { Button } from "./ui/Button";
-import Menu from "./ui/Menu";
+import { ButtonScrape } from "./ui/ButtonScrape";
 import CafeteriaMenu from "./ui/cafeteria-menu";
 
 export default function HomePage() {
@@ -17,7 +15,7 @@ export default function HomePage() {
           <Menu />
         </div> */}
         <CafeteriaMenu />
-        <Button />
+        <ButtonScrape />
       </div>
     </main>
   );

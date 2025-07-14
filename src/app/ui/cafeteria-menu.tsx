@@ -1,10 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Badge } from "../../components/ui/badge"
-import { Clock, Utensils } from "lucide-react"
+import { Utensils } from "lucide-react"
 import { db } from "~/server/db"
 import { preschool_menus } from "~/server/db/schema"
 import { sql } from "drizzle-orm"
-import type MenuItem from "./MenuItem"
 
 interface DayMenu {
   dayOfWeek: string
@@ -22,7 +21,7 @@ export default async function CafeteriaMenu() {
   const result = await db
     .select()
     .from(preschool_menus)
-    .where(sql`${preschool_menus.menuDate} BETWEEN CURRENT_DATE AND CURRENT_DATE - INTERVAL '3 day'`)
+    .where(sql`${preschool_menus.menuDate} BETWEEN  CURRENT_DATE - INTERVAL '7 day' AND CURRENT_DATE`)
 
   const menuItems: DayMenu[] = result.map((row) => ({
     dayOfWeek: row.dayOfWeek,
@@ -41,6 +40,9 @@ export default async function CafeteriaMenu() {
     menuItems[1].isTomorrow = true
   }
 
+  menuItems.forEach((item) => {
+    item.dayOfWeek = item.dayOfWeek.toLocaleUpperCase()
+  })
 
 
   return (
@@ -48,7 +50,7 @@ export default async function CafeteriaMenu() {
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
           <Utensils className="h-8 w-8 text-orange-600" />
-          Preschool Menu
+          Jídelníček - MŠ Duha
         </h1>
       </div>
 
@@ -69,7 +71,7 @@ export default async function CafeteriaMenu() {
                 <CardHeader className="pb-3 text-center">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <CardTitle className="text-2xl font-semibold">{dayMenu.dayOfWeek}</CardTitle>
-                    <Badge className="bg-green-100 text-green-800 border-green-300">Featured</Badge>
+                    <Badge className="bg-green-100 text-green-800 border-green-300">Zítra</Badge>
                   </div>
                   <p className="text-sm text-gray-600">{dayMenu.menuDate}</p>
                 </CardHeader>
