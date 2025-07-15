@@ -5,6 +5,7 @@ import sharp from 'sharp';
 import { createWorker } from 'tesseract.js';
 import { db } from '~/server/db';
 import { preschool_menus } from '~/server/db/schema';
+import fs from 'fs'
 
 export type MenuDay = {
     date: Date,
@@ -30,19 +31,13 @@ export async function scrapeMenu() {
         if (img.src.includes("jidelnicek")) {
             const url = BASE_MS_URL + img.src
             console.log('URL: ', url)
-            await getTextFromImage(url)
+            getTextFromImage(url)
         }
     }
 
-    // imgs.forEach((img) => {
-    //     if (img.src.includes("jidelnicek")) {
-    //         const url = BASE_MS_URL + img.src
-    //         console.log('URL: ', url)
-    //         await getTextFromImage(url)
-    //     }
-    // });
-
     async function getTextFromImage(url: string) {
+        const imageId = crypto.randomUUID()
+
         // contrast adjustment
         try {
             const response = await fetch(url)
@@ -56,7 +51,7 @@ export async function scrapeMenu() {
                 })
                 .sharpen({ sigma: 2 })
                 .normalise()
-                .toFile('./adjustedMenu.jpeg')
+                .toFile(`./${imageId}.jpeg`)
         } catch (error) {
             console.log(error)
         }
@@ -64,14 +59,22 @@ export async function scrapeMenu() {
         // OCR from image of menu
         // Path to worker.js file had to be adjusted to static path of package. 
         // This wount work for new project with freshly installed dependencies.
-        const worker = await createWorker('ces');
+        const worker = await createWorker('ces')
         console.log('created worker for CES OCR')
-        const ret = await worker.recognize('adjustedMenu.jpeg');
-        console.log('got data from OCR')
+        const ret = await worker.recognize(`${imageId}.jpeg`)
+        console.log('got data from OCR image: ', imageId + '.jpeg')
         const ocrText = ret.data.text.toLowerCase()
         await parseText(ocrText)
         await worker.terminate();
 
+        //delete already read file
+        fs.unlink(`./${imageId}.jpeg`, (err) => {
+            if (err) {
+                console.log('Error deleting file:', err)
+                return
+            }
+            console.log(`File ${imageId}.jpeg deleted successfully.`)
+        })
     }
 
     // we want to read from line starting with a dayOfWeek then 4 lines with all daily items
