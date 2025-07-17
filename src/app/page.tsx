@@ -12,12 +12,13 @@ export default function HomePage() {
           Preschool menu
         </h1> */}
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-8 py-8">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-1">
           <WeatherWidget />
           <RadarWidget />
-          <CafeteriaMenu />
+
 
         </div>
+        <CafeteriaMenu />
         <ButtonScrape />
 
       </div>
