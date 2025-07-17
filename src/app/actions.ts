@@ -27,13 +27,22 @@ export async function scrapeMenu() {
 
     const imgs = dom.window.document.querySelectorAll('img')
 
+    const imagePromises = []
     for (const img of imgs) {
         if (img.src.includes("jidelnicek")) {
             const url = BASE_MS_URL + img.src
             console.log('URL: ', url)
-            getTextFromImage(url)
+            imagePromises.push(getTextFromImage(url))
         }
     }
+
+    try {
+        await Promise.all(imagePromises)
+        console.log('All image processin completed from Promises.')
+    } catch (err) {
+        console.log('Error occurre while processing images as Promises.', err)
+    }
+
 
     async function getTextFromImage(url: string) {
         const imageId = crypto.randomUUID()
