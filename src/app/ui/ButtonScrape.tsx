@@ -24,7 +24,7 @@ export function ButtonScrape() {
 
     return (
         <form onSubmit={handleSubmit}>
-            <Button disabled={isLoading} variant="outline" className="bg-black/60 p-3 rounded-xl">{isLoading ? "Loading...." : "Stahnout jidelnicek"}</Button>
+            <Button disabled={isLoading} variant="outline" className="bg-black/60 p-3 rounded-xl">{isLoading ? "Načítání..." : "Stáhnout jídelníček"}</Button>
         </form>
     )
 }

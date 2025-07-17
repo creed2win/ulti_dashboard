@@ -21,7 +21,7 @@ export default async function CafeteriaMenu() {
   const result = await db
     .select()
     .from(preschool_menus)
-    .where(sql`${preschool_menus.menuDate} BETWEEN  CURRENT_DATE - INTERVAL '7 day' AND CURRENT_DATE`)
+    .where(sql`${preschool_menus.menuDate} BETWEEN CURRENT_DATE AND CURRENT_DATE - INTERVAL '7 day'`)
 
   const menuItems: DayMenu[] = result.map((row) => ({
     dayOfWeek: row.dayOfWeek,
@@ -52,6 +52,7 @@ export default async function CafeteriaMenu() {
           <Utensils className="h-8 w-8 text-orange-600" />
           Jídelníček - MŠ Duha
         </h1>
+        {(result.length < 1) ? (<p>Neexistuje aktuální jidelníček.</p>) : (<p></p>)}
       </div>
 
       <div className="flex flex-col gap-4 ">
