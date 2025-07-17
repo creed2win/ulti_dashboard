@@ -1,5 +1,7 @@
 import { ButtonScrape } from "./ui/ButtonScrape";
 import CafeteriaMenu from "./ui/cafeteria-menu";
+import RadarWidget from "./ui/RadarWidget";
+import WeatherWidget from "./ui/WeatherWidget";
 
 export default function HomePage() {
 
@@ -10,13 +12,15 @@ export default function HomePage() {
           Preschool menu
         </h1> */}
 
-        {/* <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-8 py-8">
+          <WeatherWidget />
+          <RadarWidget />
+          <CafeteriaMenu />
 
-          <Menu />
-        </div> */}
-        <CafeteriaMenu />
+        </div>
         <ButtonScrape />
+
       </div>
-    </main>
+    </main >
   );
 }

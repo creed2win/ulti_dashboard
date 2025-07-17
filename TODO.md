@@ -7,6 +7,9 @@
     maybe use jsdom library which i saw here https://www.youtube.com/watch?v=bGShHOOoC-U
 
 [x] add nicer looking UI for menus - copy from v0
-[ ] figure out how to create workers async - eslint forced me to make it synchronus and it is sloooow
+
+[x] figure out how to create workers async - eslint forced me to make it synchronus and it is sloooow - solved by Promise.all with array of promises
 
 [x] try to loadtest vercel deployment of my simple app - using k6 it was awesome what you can do
+
+[ ] forecast for 2 days and radar overview

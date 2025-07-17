@@ -50,7 +50,7 @@ export default async function CafeteriaMenu() {
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
           <Utensils className="h-8 w-8 text-orange-600" />
-          Jídelníček - MŠ Duha
+          Jídelníček
         </h1>
         {(result.length < 1) ? (<p>Neexistuje aktuální jidelníček.</p>) : (<p></p>)}
       </div>
