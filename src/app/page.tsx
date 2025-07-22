@@ -22,7 +22,6 @@ export default function HomePage() {
         <CafeteriaMenu />
         <ButtonScrape />
 
-        <Dashboard />
       </div>
     </main >
   );
