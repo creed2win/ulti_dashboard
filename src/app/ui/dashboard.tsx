@@ -26,6 +26,8 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
+
+
 // Widget Components
 const WeatherWidget = () => (
   <Card className="h-full">
@@ -50,6 +52,7 @@ const WeatherWidget = () => (
     </CardContent>
   </Card>
 )
+
 
 const TasksWidget = () => (
   <Card className="h-full">
@@ -81,6 +84,7 @@ const TasksWidget = () => (
     </CardContent>
   </Card>
 )
+
 
 const MapsWidget = () => (
   <Card className="h-full">
@@ -139,7 +143,7 @@ const CalendarWidget = () => (
     <CardContent>
       <div className="space-y-2">
         <div className="text-sm">
-          <div className="font-medium">Today's Events</div>
+          <div className="font-medium">Today&apos;s Events</div>
           <div className="mt-2 space-y-1">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -257,8 +261,9 @@ const widgets: WidgetComponents = {
   stats: { component: SystemStatsWidget, name: "System Stats", icon: Activity },
 }
 
+
 type WidgetComponent = {
-  component: ComponentType<any>,
+  component: ComponentType,
   name: string,
   icon: LucideIcon,
 }

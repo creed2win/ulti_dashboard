@@ -1,6 +1,5 @@
 import { ButtonScrape } from "./ui/ButtonScrape";
 import CafeteriaMenu from "./ui/cafeteria-menu";
-import Dashboard from "./ui/dashboard";
 import RadarWidget from "./ui/RadarWidget";
 import WeatherWidget from "./ui/WeatherWidget";
 
