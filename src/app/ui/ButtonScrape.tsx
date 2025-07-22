@@ -1,8 +1,9 @@
 'use client'
 
-import { scrapeMenu } from "../actions"
-import { Button } from "../../components/ui/button"
+import { scrapeMenu } from "~/app/actions"
+import { Button } from "~/components/ui/button"
 import { useState } from "react"
+import SpinnerCircleDemo from "~/components/customized/spinner/spinner-02"
 
 export function ButtonScrape() {
     const [isLoading, setIsLoading] = useState(false)
@@ -24,7 +25,12 @@ export function ButtonScrape() {
 
     return (
         <form onSubmit={handleSubmit}>
-            <Button disabled={isLoading} variant="outline" className="bg-black/60 p-3 rounded-xl">{isLoading ? "Načítání..." : "Stáhnout jídelníček"}</Button>
+            <div className="flex">
+                <div className="p-1">
+                    {isLoading ? <SpinnerCircleDemo /> : <></>}
+                </div>
+                <Button disabled={isLoading} variant="outline" className="bg-black/60 p-3 rounded-xl">{isLoading ? "Načítání..." : "Stáhnout jídelníček"}</Button>
+            </div>
         </form>
     )
 }

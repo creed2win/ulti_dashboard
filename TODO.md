@@ -12,4 +12,6 @@
 
 [x] try to loadtest vercel deployment of my simple app - using k6 it was awesome what you can do
 
-[ ] forecast for 2 days and radar overview
+[x] forecast for 2 days and radar overview
+
+[ ] navigation menu for all optional widgets
