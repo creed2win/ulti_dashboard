@@ -6,6 +6,7 @@ import { createWorker } from 'tesseract.js';
 import { db } from '~/server/db';
 import { preschool_menus } from '~/server/db/schema';
 import fs from 'fs'
+import { revalidatePath } from 'next/cache';
 
 export type MenuDay = {
     date: Date,
@@ -199,4 +200,5 @@ export async function scrapeMenu() {
         }
         return result
     }
+    revalidatePath('/')
 }

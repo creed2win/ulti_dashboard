@@ -15,3 +15,5 @@
 [x] forecast for 2 days and radar overview
 
 [ ] navigation menu for all optional widgets
+    [x] findout how to pass server component into client one (dashboard-client vs. jidelnicek-server)
+    [ ] how to control passed compoenents with state in client component(dashboard)

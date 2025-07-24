@@ -1,5 +1,7 @@
+import { Button } from "~/components/ui/button";
 import { ButtonScrape } from "./ui/ButtonScrape";
 import CafeteriaMenu from "./ui/cafeteria-menu";
+import Dashboard from "./ui/dashboard";
 import RadarWidget from "./ui/RadarWidget";
 import WeatherWidget from "./ui/WeatherWidget";
 
@@ -13,14 +15,18 @@ export default function HomePage() {
         </h1> */}
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-1">
-          <WeatherWidget />
-          <RadarWidget />
+
 
 
         </div>
-        <CafeteriaMenu />
-        <ButtonScrape />
 
+        <Dashboard>
+          <WeatherWidget name="Predpoved" />
+          <RadarWidget name="Radar" />
+          <ButtonScrape name="Nacist jidelnicek" />
+          <CafeteriaMenu name="Jidelnicek" />
+
+        </Dashboard>
       </div>
     </main >
   );
