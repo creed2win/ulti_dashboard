@@ -16,4 +16,4 @@
 
 [ ] navigation menu for all optional widgets
     [x] findout how to pass server component into client one (dashboard-client vs. jidelnicek-server)
-    [ ] how to control passed compoenents with state in client component(dashboard)
+    [ ] how to control passed compoenents with state in client component(dashboard) - almost there. Need to find out how to sync state with rendered components.

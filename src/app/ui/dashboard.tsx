@@ -9,17 +9,9 @@ import { Label } from "~/components/ui/label"
 import { Badge } from "~/components/ui/badge"
 import { Separator } from "~/components/ui/separator"
 import {
-  Settings,
-  Cloud,
-  Map,
-  Calendar,
   Trash2,
-  type LucideIcon,
 } from "lucide-react"
-import WeatherWidget from "./WeatherWidget"
-import RadarWidget from "./RadarWidget"
-// import CafeteriaMenu from "./cafeteria-menu"
-import { ButtonScrape } from "./ButtonScrape"
+
 
 
 type WidgetComponent = {
@@ -45,23 +37,18 @@ type Widgets = {
 export default function Dashboard({ children }: { children: React.ReactNode }) {
 
   const childrenArray = Children.toArray(children)
-  console.log(childrenArray)
-
-  const widgets: WidgetComponents = {
-    weatherForecast: { component: WeatherWidget, name: "Předpověď" },
-    weatherRadar: { component: RadarWidget, name: "Radar" },
-    // menu: { component: CafeteriaMenu, name: "Jídelníček"},
-    loadMenuButton: { component: ButtonScrape, name: "Načtení jídelníčku" },
-  }
 
   const [sidebarWidth, setSidebarWidth] = useState(320)
   const [isResizing, setIsResizing] = useState(false)
   const [enabledWidgets, setEnabledWidgets] = useState<number[]>([0])
 
   const toggleWidget = (index: number) => {
+    console.log('Toggling this:', childrenArray[index]?.props.id)
+
     setEnabledWidgets(prev =>
-      prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+      prev.includes(index) ? prev.filter(i => i !== index).sort() : [...prev, index].sort()
     )
+
   }
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -107,7 +94,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
     }
   }, [isResizing])
 
-  const enabledCount = Object.values(enabledWidgets).filter(Boolean).length
+  console.log('current state of enabled widgets: ', enabledWidgets)
 
   return (
     < div className="min-h-screen flex" >
@@ -120,23 +107,18 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
             <p className="text-sm text-muted-foreground">Toggle widgets on or off to customize your dashboard</p>
           </div>
 
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Active Widgets</span>
-            <Badge variant="secondary">{enabledCount}</Badge>
-          </div>
-
           <Separator />
 
           <div className="space-y-4">
-            {Object.entries(childrenArray).map(([id, name], index) => {
+            {Object.entries(childrenArray).map(([id, child], index) => {
               return (
                 <div key={id} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Label htmlFor={id} className="text-sm font-medium cursor-pointer">
-                      test
+                      {child.props.id}
                     </Label>
                   </div>
-                  <Switch id={id} checked={!enabledWidgets[index]} onCheckedChange={() => toggleWidget(index)} />
+                  <Switch id={id} checked={enabledWidgets.includes(index)} onCheckedChange={() => toggleWidget(index)} />
                 </div>
               )
             })}
@@ -150,7 +132,13 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
               size="sm"
               className="w-full bg-transparent"
               onClick={() => {
-                setEnabledWidgets([childrenArray.length])
+
+                let allEnabled: number[] = new Array<number>
+                childrenArray.map((_, index) => {
+                  allEnabled = allEnabled.concat(index)
+                })
+                console.log(allEnabled)
+                setEnabledWidgets(allEnabled)
               }}
             >
               Enable All
@@ -160,7 +148,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
               size="sm"
               className="w-full bg-transparent"
               onClick={() => {
-                setEnabledWidgets([0])
+                setEnabledWidgets([])
               }}
             >
               <Trash2 className="h-4 w-4 mr-2" />
@@ -183,9 +171,6 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
         {/* Header */}
         < div className="mb-6" >
           <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">
-            {enabledCount} widget{enabledCount !== 1 ? "s" : ""} active
-          </p>
         </div >
 
         {/* Widgets Grid */}
@@ -215,9 +200,10 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
           )
         } */}
         <p>Conditional experiment</p>
-        {childrenArray.map((child) => {
+        {childrenArray.map((child, index) => {
+          if (!enabledWidgets[index]) return null
           return (
-            <div className="p-4">
+            <div key={index} className="p-4">
               {child}
             </div>
           )

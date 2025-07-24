@@ -5,7 +5,7 @@ import { Button } from "~/components/ui/button"
 import { useState } from "react"
 import SpinnerCircleDemo from "~/components/customized/spinner/spinner-02"
 
-export function ButtonScrape({ name }: { name: string }) {
+export function ButtonScrape({ id }: { id: string }) {
     const [isLoading, setIsLoading] = useState(false)
 
     const handleSubmit = async (event: { preventDefault: () => void }) => {

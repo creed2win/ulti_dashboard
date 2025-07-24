@@ -21,10 +21,10 @@ export default function HomePage() {
         </div>
 
         <Dashboard>
-          <WeatherWidget name="Predpoved" />
-          <RadarWidget name="Radar" />
-          <ButtonScrape name="Nacist jidelnicek" />
-          <CafeteriaMenu name="Jidelnicek" />
+          <WeatherWidget id="Predpoved" />
+          <RadarWidget id="Radar" />
+          <ButtonScrape id="Nacist jidelnicek" />
+          <CafeteriaMenu id="Jidelnicek" />
         </Dashboard>
       </div>
     </main >

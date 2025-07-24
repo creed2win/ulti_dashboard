@@ -16,7 +16,7 @@ interface DayMenu {
   isTomorrow?: boolean
 }
 
-export default async function CafeteriaMenu({ name }: { name: string }) {
+export default async function CafeteriaMenu({ id }: { id: string }) {
   // getting data from db
   const result = await db
     .select()
@@ -46,7 +46,7 @@ export default async function CafeteriaMenu({ name }: { name: string }) {
 
 
   return (
-    <div>
+    <div id={id}>
       <div className="w-full max-w-3xl mx-auto p-6">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2 flex items-center justify-center gap-2">
