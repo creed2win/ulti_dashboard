@@ -25,7 +25,6 @@ export default function HomePage() {
           <RadarWidget name="Radar" />
           <ButtonScrape name="Nacist jidelnicek" />
           <CafeteriaMenu name="Jidelnicek" />
-
         </Dashboard>
       </div>
     </main >

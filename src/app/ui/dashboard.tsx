@@ -56,18 +56,12 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
 
   const [sidebarWidth, setSidebarWidth] = useState(320)
   const [isResizing, setIsResizing] = useState(false)
-  const [enabledWidgets, setEnabledWidgets] = useState<Widgets>({
-    weatherForecast: true,
-    weatherRadar: true,
-    menu: true,
-    loadMenuButton: true,
-  })
+  const [enabledWidgets, setEnabledWidgets] = useState<number[]>([0])
 
-  const toggleWidget = (widgetId: string) => {
-    setEnabledWidgets((prev) => ({
-      ...prev,
-      [widgetId]: !prev[widgetId],
-    }))
+  const toggleWidget = (index: number) => {
+    setEnabledWidgets(prev =>
+      prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+    )
   }
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -134,15 +128,15 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
           <Separator />
 
           <div className="space-y-4">
-            {Object.entries(widgets).map(([id, widget]) => {
+            {Object.entries(childrenArray).map(([id, name], index) => {
               return (
                 <div key={id} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Label htmlFor={id} className="text-sm font-medium cursor-pointer">
-                      {widget.name}
+                      test
                     </Label>
                   </div>
-                  <Switch id={id} checked={enabledWidgets[id]} onCheckedChange={() => toggleWidget(id)} />
+                  <Switch id={id} checked={!enabledWidgets[index]} onCheckedChange={() => toggleWidget(index)} />
                 </div>
               )
             })}
@@ -156,13 +150,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
               size="sm"
               className="w-full bg-transparent"
               onClick={() => {
-                const allEnabled: Widgets = {
-                  weatherForecast: true,
-                  weatherRadar: true,
-                  menu: true,
-                  loadMenuButton: true,
-                }
-                setEnabledWidgets(allEnabled)
+                setEnabledWidgets([childrenArray.length])
               }}
             >
               Enable All
@@ -172,13 +160,7 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
               size="sm"
               className="w-full bg-transparent"
               onClick={() => {
-                const allDisabled: Widgets = {
-                  weatherForecast: false,
-                  weatherRadar: false,
-                  menu: false,
-                  loadMenuButton: false,
-                }
-                setEnabledWidgets(allDisabled)
+                setEnabledWidgets([0])
               }}
             >
               <Trash2 className="h-4 w-4 mr-2" />
