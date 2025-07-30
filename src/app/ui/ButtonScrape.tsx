@@ -26,10 +26,10 @@ export function ButtonScrape({ id }: { id: string }) {
     return (
         <form onSubmit={handleSubmit}>
             <div className="flex">
-                <div className="p-1">
+                <div>
                     {isLoading ? <SpinnerCircleDemo /> : <></>}
                 </div>
-                <Button disabled={isLoading} variant="outline" className="bg-black/60 p-3 rounded-xl">{isLoading ? "Načítání..." : "Stáhnout jídelníček"}</Button>
+                <Button disabled={isLoading} size="sm" variant="outline" className="bg-black/60 w-full">{isLoading ? "Načítání..." : "Aktualizovat jídelníček"}</Button>
             </div>
         </form>
     )

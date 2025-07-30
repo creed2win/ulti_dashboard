@@ -2,53 +2,33 @@
 
 import type React from "react"
 
-import { useState, useEffect, type ComponentType, Children } from "react"
+import { useState, useEffect, type ComponentType, Children, isValidElement } from "react"
 import { Button } from "~/components/ui/button"
 import { Switch } from "~/components/ui/switch"
 import { Label } from "~/components/ui/label"
-import { Badge } from "~/components/ui/badge"
 import { Separator } from "~/components/ui/separator"
 import {
   Trash2,
 } from "lucide-react"
+import { ButtonScrape } from "./ButtonScrape"
 
-
-
-type WidgetComponent = {
-  component: ComponentType<any>,
-  name: string,
+type ChildType = {
+  props: {
+    id: string;
+  }
 }
-
-type WidgetComponents = {
-  weatherForecast: WidgetComponent,
-  weatherRadar: WidgetComponent,
-  // menu: WidgetComponent,
-  loadMenuButton: WidgetComponent,
-}
-
-type Widgets = {
-  weatherForecast: boolean;
-  weatherRadar: boolean;
-  // menu: boolean;
-  loadMenuButton: boolean;
-  [key: string]: boolean
-}
-
 export default function Dashboard({ children }: { children: React.ReactNode }) {
 
   const childrenArray = Children.toArray(children)
 
   const [sidebarWidth, setSidebarWidth] = useState(320)
   const [isResizing, setIsResizing] = useState(false)
-  const [enabledWidgets, setEnabledWidgets] = useState<number[]>([0])
+  const [enabledWidgets, setEnabledWidgets] = useState<number[]>([0, 1, 2])
 
   const toggleWidget = (index: number) => {
-    console.log('Toggling this:', childrenArray[index]?.props.id)
-
     setEnabledWidgets(prev =>
       prev.includes(index) ? prev.filter(i => i !== index).sort() : [...prev, index].sort()
     )
-
   }
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -94,31 +74,31 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
     }
   }, [isResizing])
 
-  console.log('current state of enabled widgets: ', enabledWidgets)
-
   return (
     < div className="min-h-screen flex" >
       {/* Settings Sidebar */}
-      < div className="border-r p-6 overflow-y-auto flex-shrink-0" style={{ width: `${sidebarWidth}px` }
-      }>
+      < div className="border-r p-6 overflow-y-auto flex-shrink-0" style={{ width: `${sidebarWidth}px` }}>
         <div className="space-y-6">
           <div>
-            <h2 className="text-xl font-semibold mb-2">Widget Settings</h2>
-            <p className="text-sm text-muted-foreground">Toggle widgets on or off to customize your dashboard</p>
+            <h2 className="text-xl font-semibold mb-2">Nastavení widgetů</h2>
           </div>
 
           <Separator />
 
           <div className="space-y-4">
-            {Object.entries(childrenArray).map(([id, child], index) => {
+
+            {Object.entries(childrenArray).map(([_, child], index) => {
+              const child2: ChildType = child as ChildType
+              const indexString = index.toString()
               return (
-                <div key={id} className="flex items-center justify-between">
+                <div key={indexString} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Label htmlFor={id} className="text-sm font-medium cursor-pointer">
-                      {child.props.id}
+                    <Label htmlFor={indexString} className="text-sm font-medium cursor-pointer">
+                      {isValidElement(child) ? child2.props.id : null}
+
                     </Label>
                   </div>
-                  <Switch id={id} checked={enabledWidgets.includes(index)} onCheckedChange={() => toggleWidget(index)} />
+                  <Switch id={indexString} checked={enabledWidgets.includes(index)} onCheckedChange={() => toggleWidget(index)} />
                 </div>
               )
             })}
@@ -137,11 +117,10 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
                 childrenArray.map((_, index) => {
                   allEnabled = allEnabled.concat(index)
                 })
-                console.log(allEnabled)
                 setEnabledWidgets(allEnabled)
               }}
             >
-              Enable All
+              Zobrazit vše
             </Button>
             <Button
               variant="outline"
@@ -152,8 +131,12 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
               }}
             >
               <Trash2 className="h-4 w-4 mr-2" />
-              Disable All
+              Skrýt vše
             </Button>
+            <div className="py-4 px-1">
+              <Separator />
+            </div>
+            <ButtonScrape id="Nacist jidelnicek" />
           </div>
         </div>
       </div >
@@ -167,49 +150,18 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
       </div >
 
       {/* Main Content */}
-      < div className="flex-1 p-6 min-w-0" >
-        {/* Header */}
-        < div className="mb-6" >
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-        </div >
-
-        {/* Widgets Grid */}
-        {/* {
-          enabledCount === 0 ? (
-            // When no widgets are visible
-            <div className="flex items-center justify-center h-64">
-              <div className="text-center">
-                <Settings className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-lg font-medium mb-2">No widgets enabled</h3>
-                <p className="text-muted-foreground mb-4">Enable some widgets using the settings panel on the left</p>
+      < div className="p-6 min-w-0" >
+        <div className="grid grid-cols-2`">
+          {childrenArray.map((child, index) => {
+            if (!enabledWidgets.includes(index)) return null
+            return (
+              <div key={index} className="p-4">
+                {child}
               </div>
-            </div>
-          ) : (
-            // when there is at least one widget
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.entries(widgets).map(([id, widget]) => {
-                if (!enabledWidgets[id]) return null
-                const WidgetComponent = widget.component
-                return (
-                  <div key={id} className="min-h-[200px]">
-                    <WidgetComponent />
-                  </div>
-                )
-              })}
-            </div>
-          )
-        } */}
-        <p>Conditional experiment</p>
-        {childrenArray.map((child, index) => {
-          if (!enabledWidgets[index]) return null
-          return (
-            <div key={index} className="p-4">
-              {child}
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
-
 
     </div>
 

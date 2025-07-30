@@ -21,7 +21,7 @@ export default async function CafeteriaMenu({ id }: { id: string }) {
   const result = await db
     .select()
     .from(preschool_menus)
-    .where(sql`${preschool_menus.menuDate} BETWEEN CURRENT_DATE - INTERVAL '20 day' AND CURRENT_DATE`)
+    .where(sql`${preschool_menus.menuDate} BETWEEN CURRENT_DATE - INTERVAL '1 day' AND CURRENT_DATE + INTERVAL '3 day'`)
 
   const menuItems: DayMenu[] = result.map((row) => ({
     dayOfWeek: row.dayOfWeek,
